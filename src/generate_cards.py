@@ -25,11 +25,11 @@ def points(i):
         return 30
     return 0
 
-for i in range(1,52+1):
-    cards[i] = {
+for i in range(52):
+    cards[i+1] = {
         'suit': 1 + i//13,
-        'value': points(i),
-        'img': f'/cards/row-{1 + i//13}-column-{1 + i%13}.png'
+        'value': points(i+1),
+        'img': f'/cards/row-{1 + i//13}-column-{1+i%13}.png'
     }
 
 with open('cards.json','w') as f:

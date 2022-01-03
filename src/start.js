@@ -3,26 +3,17 @@ import axios from "axios";
 import { useState } from "react/cjs/react.development";
 import { useEffect } from "react";
 import Card from "./Card";
+import { useGlobalContext } from './Context';
 
-function Start({start,bid}) {
+function Start() {
     const [name,setName] = useState('');
-    const [players, setPlayers] = useState([]);
-
-    function getPlayers() {
-        axios.get('/startShow')
-        .then((data) => { console.log(data); setPlayers(data['data']['players']); })
-        .catch((e) => { console.log('Error in useffect'); console.log(e) })
-    }
-
-    useEffect(() => {
-        getPlayers()
-    }, []);
+    const { socket, setMode, players, resetGame } = useGlobalContext();
 
     return (
         <div>
             <div className="row mb-5 bg-dark text-light text-center">
                 <div className="col-1">
-                    <Card num={15}></Card>
+                    <Card num={16}></Card>
                 </div>
                 <div className="col-10 my-auto">
                     <div className="fs-1"> Kaali Teeri </div>
@@ -33,14 +24,19 @@ function Start({start,bid}) {
                     <div className="row">
                         <div className="col-6 text-center">
                             <button className="btn btn-danger" onClick={() => { 
-                                start(true); 
-                                bid(true); 
-                                axios.get('/reset');
-                                window.location.reload();
+                                resetGame()
                             }}> Reset </button>
                         </div>
                         <div className="col-6 text-center">
-                            <button className="btn btn-warning" onClick={() => { start(false) }}> Start Game</button>
+                            <button className="btn btn-warning" onClick={() => 
+                                { 
+                                    setMode(2);
+                                    socket.emit('setMode', {mode: 2})
+                                }
+                            }
+                                > 
+                                Start Game
+                            </button>
                         </div>
                     </div>      
                     <div className="row m-5 ">
@@ -51,20 +47,13 @@ function Start({start,bid}) {
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Name</label>
-                                        <input type="text" className="form-control" id="name" onInput={(e) => { setName(e.target.value) }}></input>
+                                        <input type="text" className="form-control" id="name" onChange={(e) => { setName(e.target.value) }}></input>
                                     </div>
-                                    <button type="submit" className="btn btn-primary" 
+                                    <button className="btn btn-primary" 
                                         onClick = {async (e) => {
                                             e.preventDefault(); 
-                                            
-                                            axios.post('/add', {'name': name }) 
-                                            .then(() => { 
-                                                console.log('Done'); 
-                                                getPlayers(); 
-                                                alert('Registered');
-                                                window.location.reload();
-                                            })
-                                            .catch((e) => console.log(e));
+                                            localStorage.setItem('name', name);
+                                            socket.emit('addPlayer', {name: name})
                                     }}> 
                                     Register </button>
                                 </form>                

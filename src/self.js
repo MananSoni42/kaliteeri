@@ -1,6 +1,10 @@
 import Card from "./Card";
+import { useGlobalContext } from './Context';
 
 function Self() {
+    const { cards } = useGlobalContext();
+    console.log(cards);
+
     return (
         <div className="row m-1 mt-2">
             <div className="col-2">
@@ -35,16 +39,9 @@ function Self() {
                     <div className="col-4"></div>
                 </div>
             </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
-            <div className="col-1"> <Card num={0}></Card> </div>
+            {cards.map((card,index) => {
+                return <div className="col-1" key={index}> <Card num={card}></Card> </div>
+            })}
         </div>
     );
 }
