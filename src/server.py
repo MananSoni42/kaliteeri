@@ -41,6 +41,19 @@ def add_player():
     print(players)
     return redirect(location='http://127.0.0.1:3000', code=200)
 
+@app.route("/reset")
+def reset_game():
+    global num_players, ip2name, players, teammates, round_info, round_num, cards
+    num_players = 0
+    ip2name = dict()
+    players = []
+    teammates = []
+    round_info = []
+    round_num = 0
+    cards = dict()
+
+    return redirect(location='http://127.0.0.1:3000', code=200)
+
 @app.route("/start")
 def start_game():
     pass

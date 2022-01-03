@@ -6,8 +6,8 @@ function Player({name,info}) {
             <div>
                 <div className="row">
                     <div className="col-12">
-                        <img src="/user.png" alt="name" className="img-fluid"/>
-                        <div className="fs-5"> {name}] </div>
+                        <img src="/user/user-black.png" alt="name" className="img-fluid"/>
+                        <div className="fs-5"> {name} </div>
                         <div className="fs-7"> Haath:  0</div>
                         <div className="fs-7"> Points: 0 </div>
                     </div>
@@ -24,7 +24,7 @@ function Player({name,info}) {
             <div>
                 <div className="row">
                     <div className="col-12">
-                        <img src="/user.png" alt="name" className="img-fluid"/>
+                        <img src="/user/user-black.png" alt={`user-${name}`} className="img-fluid"/>
                         <div className="fs-5"> {name} </div>
                     </div>
                 </div>

@@ -7,8 +7,8 @@ import React, { useState } from 'react';
 import Start from './start';
 
 function App() {
-  const [start,useStart] = useState(false);
-  const [bid,useBid] = useState(true);
+  const [start,setStart] = useState(false);
+  const [bid,setBid] = useState(true);
 
   if (start) {
     return (
@@ -16,7 +16,7 @@ function App() {
         <div className="container-fluid">
           <div className="row">
             <div className="col-12">
-              <Start arg={useStart}></Start>
+              <Start start={setStart} bid={setBid}></Start>
             </div>
           </div>
         </div>
