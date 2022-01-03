@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import Start from './start';
 
 function App() {
-  const [start,useStart] = useState(true);
+  const [start,useStart] = useState(false);
   const [bid,useBid] = useState(true);
 
   if (start) {

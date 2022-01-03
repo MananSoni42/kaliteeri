@@ -1,6 +1,5 @@
 import Card from './Card.js';
 import Player from './Player.js';
-import photo from './assets/user.png';
 
 function Table() {
     return (

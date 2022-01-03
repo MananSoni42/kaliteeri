@@ -26,16 +26,16 @@ function Self() {
                     <div className="col-4"></div>
                 </div>
             </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
-            <div className="col-1"> <Card></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
+            <div className="col-1"> <Card num={0}></Card> </div>
         </div>
     );
 }
