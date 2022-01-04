@@ -7,22 +7,26 @@ const AppContext = React.createContext();
 export const AppProvider = ({ children }) => {
   const socket = io('ws://localhost:5000');
   const [players, setPlayers] = useState([]);
-  const [cards, setCards] = useState({});
+  const [cards, setCards] = useState([]);
   const [bid, setBid] = useState(100);
   const [bidder, setBidder] = useState('');
   const [trump, setTrump] = useState(0);
   const [turn, setTurn] = useState(0);
   const [round, setRound] = useState(0);
   const [mode, setMode] = useState(1);
+  const [name, setName] = useState('');
 
   useEffect(() => {
     console.log('hi2');
     //socket.emit('getInitialData', {name: localStorage.getItem('name')?localStorage.getItem('name'):''})
-    socket.emit('getInitialData', {name: 'akshay'})
+    socket.emit('getInitialData', {name:name?name:''})
   }, [])
 
   socket.on('setInitialData', (data) => {
-    console.log(window.localStorage.getItem('name'), data);
+    //console.log(window.localStorage.getItem('name'), data);
+    console.log('si')
+    console.log(data.name, data);
+    setName(data.name)
     setPlayers(data.players);
     setCards(data.cards);
     setBid(data.bid);
@@ -34,9 +38,12 @@ export const AppProvider = ({ children }) => {
   })
 
   socket.on('getGame', (data) => {
-    console.log(window.localStorage.getItem('name'), data);
+    console.log('gg')
+    console.log(data.name, data);
+    setName(data.name)
     setPlayers(data.players);
-    setCards(data.cards[localStorage.getItem('name')]);
+    //setCards(data.cards[localStorage.getItem('name')]);
+    setCards(data.cards[data.name]);
     setBid(data.bid);
     setBidder(data.bidder);
     setTrump(data.trump);
@@ -49,13 +56,14 @@ export const AppProvider = ({ children }) => {
     console.log('get', players)
     setPlayers(players)
   }) 
-  socket.on('getBid', (bid, bidder) => {
-    setBid(bid);
-    setBidder(bidder)
+
+  socket.on('newBid', (data) => {
+    setBid(data.bid);
+    setBidder(data.bidder)
   }) 
   socket.on('getMode', (data) => {
     setMode(data.mode);
-  }) 
+  })
 
   function resetGame() {
     setPlayers([]);
@@ -80,7 +88,8 @@ export const AppProvider = ({ children }) => {
         players, setPlayers,
         round, setRound,
         turn, setTurn,
-        mode, setMode
+        mode, setMode,
+        name, setName,
       }}
     >
       {children}

@@ -6,8 +6,8 @@ import Card from "./Card";
 import { useGlobalContext } from './Context';
 
 function Start() {
-    const [name,setName] = useState('');
-    const { socket, setMode, players, resetGame } = useGlobalContext();
+    const [name,setName1] = useState('');
+    const { socket, setMode, players, resetGame, setName } = useGlobalContext();
 
     return (
         <div>
@@ -47,12 +47,13 @@ function Start() {
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Name</label>
-                                        <input type="text" className="form-control" id="name" onChange={(e) => { setName(e.target.value) }}></input>
+                                        <input type="text" className="form-control" id="name" onChange={(e) => { setName1(e.target.value) }}></input>
                                     </div>
                                     <button className="btn btn-primary" 
                                         onClick = {async (e) => {
                                             e.preventDefault(); 
                                             localStorage.setItem('name', name);
+                                            setName(name);
                                             socket.emit('addPlayer', {name: name})
                                     }}> 
                                     Register </button>
