@@ -103,11 +103,11 @@ def fbidcomplete(data):
     emit('round', {
         'round': 1,
         'turn': players[turn],
-        'cards': [16, 14],
+        'cards': cards,
         'trump': trump,
     }, broadcast=True)
     turn += 1
-
+    mode = 3
 
 @socketio.on('setMode')
 def fset_mode(data):

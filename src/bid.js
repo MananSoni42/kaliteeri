@@ -3,7 +3,7 @@ import Card from './Card.js';
 import { useGlobalContext } from './Context';
 
 function BiddingTable() {
-    const { name, socket } = useGlobalContext();
+    const { name, socket, mode, setMode } = useGlobalContext();
     const [bid, setBid] = useState(100);
     const [bidder, setBidder] = useState('None');
     const [cards, setCards] = useState([]);
@@ -27,10 +27,13 @@ function BiddingTable() {
         socket.emit('startGame', {name: name});
     }, [])
 
-    socket.on('round', (data) => {
+    socket.on('round', async (data) => {
         console.log(data)
         setCards(data.cards);
         setTrump(data.trump)
+        await new Promise(r => setTimeout(r, 2000));
+        setMode(3)
+
     })
 
     return (
@@ -38,12 +41,12 @@ function BiddingTable() {
             <div className="row m-1">
                 <div className="col-6">
                     <div className="row">
-                        <div className="col-12 fs-3">
+                        <div className="col-12 fs-4">
                             Current Bidder: {bidder}
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-12 fs-3">
+                        <div className="col-12 fs-4">
                             Current Bid: {bid}
                         </div>
                     </div>

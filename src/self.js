@@ -3,7 +3,7 @@ import Card from "./Card";
 import { useGlobalContext } from './Context';
 
 function Self() {
-    const { name, cards, socket } = useGlobalContext();
+    const { name, cards, socket, mode } = useGlobalContext();
 
     useEffect(() => {
         socket.emit('getPlayer', {})
@@ -14,14 +14,14 @@ function Self() {
     const [trump, setTrump] = useState(['2']);
     const [suit, setSuit] = useState(['1-2']);
     const [val, setVal] = useState(['1-2']);
-    const [numTeammates, setNumTeammates] = useState(1);
+    const [numTeammates, setNumTeammates] = useState([1]);
 
     socket.on('changePlayer', (data) => {
         const n = data.players.length;
         if (n > 5) {
             setSuit(['1-2', '2-2'])
             setVal(['1-2', '2-2'])
-            setNumTeammates(2);
+            setNumTeammates([1,2]);
         }
     })
 
@@ -66,7 +66,7 @@ function Self() {
         setVal([...val, e])
     }
 
-    if (endBid) {
+    if (endBid && mode === 2) {
         return (
             <div className="row m-1 mt-2">
                 <div className="col-2">

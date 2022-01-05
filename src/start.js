@@ -1,7 +1,5 @@
 import Player from "./Player";
-import axios from "axios";
 import { useState } from "react/cjs/react.development";
-import { useEffect } from "react";
 import Card from "./Card";
 import { useGlobalContext } from './Context';
 
