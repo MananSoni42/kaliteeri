@@ -18,6 +18,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 players = []
+colors = []
 cards = dict()
 trump = 0
 teammates = []
@@ -130,17 +131,17 @@ def fadd_player(data):
 
 @socketio.on('getPlayer')
 def fget_player(data):
-    emit('changePlayer', {'players': players})
+    emit('changePlayer', {'players': players, 'colors': colors})
 
 
 @socketio.on('addPlayer')
 def fadd_player(data):
-    global players, ip2name
+    global players, ip2name, colors
     num_players = len(players)
-    name = data['name']
-    players.append(name)
+    players.append(data['name'])
+    colors.append(data['color'])
     num_players += 1
-    emit('changePlayer', {'players': players}, broadcast=True)
+    emit('changePlayer', {'players': players, 'colors': colors}, broadcast=True)
 
 @socketio.on('reset')
 def freset_game(data):
@@ -152,7 +153,7 @@ def freset_game(data):
     round_info = []
     round_num = 0
     cards = dict()
-    emit('changePlayer', players, broadcast=True)
+    emit('changePlayer', {'players': players, 'colors': colors}, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app, port=5000)
