@@ -60,11 +60,15 @@ def ffold(data):
                 'bidder': [k for k,v in bidders.items() if v][0]
             }, broadcast=True)
 
+@socketio.on('getBidder')
+def fgetbidder(data):
+    emit('setBidder', { 'bidder': players[0] }) 
+
 @socketio.on('bid')
 def fbid(data):
     global bid, bidder
     rname = data['name']
-    rbid = data['bid']
+    rbid = int(data['bid'])
     if rbid > bid and bidders[rname]:
         bid = rbid
         bidder = rname
@@ -78,7 +82,6 @@ def fbid(data):
 @socketio.on('bidComplete')
 def fbidcomplete(data):
     global turn
-    print(data)
     trump = data['trump'][-1]
     suit = dict()
     val = dict()
@@ -125,16 +128,19 @@ def fadd_player(data):
         'name': data['name']
     })
 
+@socketio.on('getPlayer')
+def fget_player(data):
+    emit('changePlayer', {'players': players})
+
+
 @socketio.on('addPlayer')
 def fadd_player(data):
-    print('name')
-    print(data)
     global players, ip2name
     num_players = len(players)
     name = data['name']
     players.append(name)
     num_players += 1
-    emit('changePlayer', players, broadcast=True)
+    emit('changePlayer', {'players': players}, broadcast=True)
 
 @socketio.on('reset')
 def freset_game(data):

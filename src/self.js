@@ -1,17 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "./Card";
 import { useGlobalContext } from './Context';
 
 function Self() {
-    const { cards, bid, name, socket, players } = useGlobalContext();
-    const n = players.length;
-    const num_teammates = n<=5?[1]:[1,2]
-    console.log(n)
+    const { name, cards, socket } = useGlobalContext();
 
+    useEffect(() => {
+        socket.emit('getPlayer', {})
+    }, [])
+
+    const [bid, setBid] = useState([]);
     const [endBid, setEndBid] = useState(false);
     const [trump, setTrump] = useState(['2']);
-    const [suit, setSuit] = useState(n<=5?['1-2']:['1-2', '2-2']);
-    const [val, setVal] = useState(n<=5?['1-2']:['1-2', '2-2']);
+    const [suit, setSuit] = useState(['1-2']);
+    const [val, setVal] = useState(['1-2']);
+    const [numTeammates, setNumTeammates] = useState(1);
+
+    socket.on('changePlayer', (data) => {
+        const n = data.players.length;
+        if (n > 5) {
+            setSuit(['1-2', '2-2'])
+            setVal(['1-2', '2-2'])
+            setNumTeammates(2);
+        }
+    })
+
+    socket.on('newBid', (data) => {
+        setBid(data.bid);
+        //setBidder(data.bidder)
+      }) 
 
     socket.on('endBid', (data) => {
         if (data.bidder == name) {
@@ -54,7 +71,7 @@ function Self() {
             <div className="row m-1 mt-2">
                 <div className="col-2">
                     <form>
-                        { num_teammates.map((num) => {
+                        { numTeammates.map((num) => {
                             return (
                             <div>
                                 <div className="row">
@@ -148,7 +165,7 @@ function Self() {
                         <div className="col-4"></div>
                     </div>
                 </div>
-                {cards.slice(0,10).map((card,index) => {
+                {cards.map((card,index) => {
                     return <div className="col-1" key={index}> <Card num={card}></Card> </div>
                 })}
             </div>

@@ -7,7 +7,12 @@ import { useGlobalContext } from './Context';
 
 function Start() {
     const [name,setName1] = useState('');
-    const { socket, setMode, players, resetGame, setName } = useGlobalContext();
+    const [players, setPlayers] = useState([]);
+    const { socket, resetGame, setName, setMode } = useGlobalContext();
+    
+    socket.on('changePlayer', (data) => {
+        setPlayers(data.players);
+    })
 
     return (
         <div>

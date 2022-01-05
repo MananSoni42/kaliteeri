@@ -41,7 +41,7 @@ function App() {
                 {mode===2?<BiddingTable></BiddingTable>:<Table></Table>}
               </div>
           </div>
-          <hr class="my-4"></hr>        
+          <hr className="my-4"></hr>        
           <div className="row">
               <div className="col-12">
                 <Self></Self>

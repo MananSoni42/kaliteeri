@@ -3,10 +3,25 @@ import Card from './Card.js';
 import { useGlobalContext } from './Context';
 
 function BiddingTable() {
-    const { name, bid, bidder, socket } = useGlobalContext();
+    const { name, socket } = useGlobalContext();
+    const [bid, setBid] = useState(100);
+    const [bidder, setBidder] = useState('None');
     const [cards, setCards] = useState([]);
     const [trump, setTrump] = useState(0);
     const tc = ['Not decided', 'Hearts', 'Spades', 'Diamonds', 'Clubs'];
+
+    useEffect(() => {
+        socket.emit('getBidder', {})
+    }, [])
+
+    socket.on('setBidder', (data) => {
+        setBidder(data.bidder);
+    })
+
+    socket.on('newBid', (data) => {
+        setBid(data.bid);
+        setBidder(data.bidder);
+    })
 
     useEffect(() => {
         socket.emit('startGame', {name: name});
