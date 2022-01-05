@@ -119,6 +119,7 @@ def fset_mode(data):
 def fadd_player(data):
     emit('setInitialData', {
         'players': players,
+        'colors': colors,
         'cards': [],
         'bid': bid,
         'bidder': bidder,

@@ -17,6 +17,11 @@ function Start() {
         setColors(data.colors)
     })
 
+    socket.on('setInitialData', (data) => {
+        setPlayers(data.players);
+        setColors(data.colors);
+      })
+    
     return (
         <div>
             <div className="row mb-5 bg-dark text-light text-center">
