@@ -194,7 +194,7 @@ def fplay(data):
             player_points[winner] = (player_points[winner][0]+1, player_points[winner][1]+pts)
             round_cards = [0]*len(players)
             
-            if round == 52//len(players) and turn == len(players):
+            if round == 52//len(players):
                 emit('end', {}, broadcast=True)
             else:
                 emit('newRound', {
