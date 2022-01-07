@@ -34,8 +34,6 @@ export const AppProvider = ({ children }) => {
   })
   
   function resetGame() {
-    setCards([]);
-    setMode(1);
     socket.emit('reset', {})
   }
 

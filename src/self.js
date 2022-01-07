@@ -20,6 +20,7 @@ function Self() {
     const [players, setPlayers] = useState([]);
     const [turn, setTurn] = useState(0);
     const [usedCards, setUsedCards] = useState([]);
+    const [bidDisabled, setBidDisabled] = useState(false);
 
     useEffect(() => {
         socket.emit('getPlayer', {})
@@ -91,6 +92,7 @@ function Self() {
     }
 
     function fold() {
+        setBidDisabled(true);
         socket.emit('fold', {
             name: name
         })
@@ -228,7 +230,7 @@ function Self() {
                         <div className="col-4">
                             <button className="btn btn-primary" 
                             onClick={() => { fbid() }}
-                            disabled={mode !== 2}
+                            disabled={mode !== 2 || bidDisabled}
                             > Bid </button>
                         </div>
                         <div className="col-4"></div>
