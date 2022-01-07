@@ -1,6 +1,5 @@
 from flask import Flask, url_for, request, redirect
 from flask_socketio import SocketIO, emit
-import time
 from pprint import pprint
 from utils import *
 
@@ -22,13 +21,18 @@ colors = []
 cards = dict()
 trump = 0
 teammates = []
-round_info = []
 round = 0
 turn = 0
 mode = 1
 bid = 100
 bidder = ''
-bidders = []
+bidders = dict()
+
+player_points = []
+
+round_offset = 0
+round_cards = []
+round_winner = 0
 
 @socketio.on('startGame')
 def fstart(data):
@@ -37,9 +41,10 @@ def fstart(data):
     assert mode==2
     if not cards:
         distribute_cards(players, cards)
+
     emit('getGame', {
         'players': players,
-        'cards': cards,
+        'cards': {player: sorted(cards[player]) for player in players },
         'bid': bid,
         'bidder': players[0],
         'trump': trump,
@@ -52,14 +57,16 @@ def fstart(data):
 @socketio.on('fold')
 def ffold(data):
     global bidder
-    if bidder == data['name']:
-        emit('bidError', {})
-    else:
-        bidders[data['name']] = False
-        if sum(bidders.values()) == 1:
-            emit('endBid', {
-                'bidder': [k for k,v in bidders.items() if v][0]
-            }, broadcast=True)
+    bidders[data['name']] = False
+    if sum(bidders.values()) == 1:
+        emit('endBid', {
+            'bidder': [k for k,v in bidders.items() if v][0]
+        }, broadcast=True)
+    emit('newBidders', {
+        'bidders': [player for player in players if bidders[player]]
+    }, broadcast=True)
+
+
 
 @socketio.on('getBidder')
 def fgetbidder(data):
@@ -82,7 +89,7 @@ def fbid(data):
 
 @socketio.on('bidComplete')
 def fbidcomplete(data):
-    global turn
+    global turn, player_points, trump, teammates
     trump = data['trump'][-1]
     suit = dict()
     val = dict()
@@ -98,16 +105,35 @@ def fbidcomplete(data):
     cards.append(int(suit['1'])*13 + int(val['1']) - 13)
     if n == 2:
         cards.append(int(suit['2'])*13 + int(val['2']) - 13)
+    teammates = cards
+    player_points = [(0,0) for player in players ]
 
-    print(trump, suit, val)
     emit('round', {
         'round': 1,
         'turn': players[turn],
         'cards': cards,
         'trump': trump,
     }, broadcast=True)
-    turn += 1
+
     mode = 3
+
+@socketio.on('getRound')
+def fget_round(data):
+    global bidders, bidder, players, round, turn, round_offset, round_cards, round_winner, player_points
+    bidder = [k for k,v in bidders.items() if v][0]
+    round_offset = players.index(bidder)
+    round_winner = round_offset
+    round_cards = [0]*len(players)
+
+    emit('newRound', {
+        'round': round + 3,
+        'players': players,
+        'round_offset': round_offset,
+        'turn': turn,
+        'round_cards': round_cards,
+        'points': player_points,
+        'trump': trump,
+    })
 
 @socketio.on('setMode')
 def fset_mode(data):
@@ -130,10 +156,62 @@ def fadd_player(data):
         'name': data['name']
     })
 
+@socketio.on('getResults')
+def fgetresults(data):
+    global cards, players, teammates, player_points, bid, bidder
+    t, nt, pts = calc_winners(cards, players, teammates, player_points, bidder)
+    emit('setResults', {
+        'winners': t if bid <= pts else nt,
+        'bid': bid,
+        'pts': pts if bid <= pts else 250-pts,
+        'losers': nt if bid <= pts else t,
+    })
+
+@socketio.on('play')
+def fplay(data):
+    global turn, players, cards, trump, round_cards, round, round_offset, player_points, bid, teammates, player_points
+    name = data['name']
+    ind = players.index(data['name'])
+
+    if (ind == (round_offset+turn)%len(players)):
+        turn += 1
+        round_cards[ind] = int(data['card'])
+        
+        if turn == len(players):
+            emit('newTurn', {
+                'turn': turn,
+                'round_cards': round_cards,
+            }, broadcast=True)
+
+
+            winner, pts = process_round(round_offset, round_cards, trump)
+            round += 1
+            round_offset = winner
+            turn = 0
+            player_points[winner] = (player_points[winner][0]+1, player_points[winner][1]+pts)
+            round_cards = [0]*len(players)
+            
+            if round == 52//len(players) and turn == len(players):
+                emit('end', {}, broadcast=True)
+            else:
+                emit('newRound', {
+                    'round': round + 3,
+                    'players': players,
+                    'round_offset': round_offset,
+                    'turn': turn,
+                    'round_cards': round_cards,
+                    'points': player_points,
+                    'trump': trump
+                }, broadcast=True)
+        else:
+            emit('newTurn', {
+                'turn': turn,
+                'round_cards': round_cards,
+            }, broadcast=True)
+
 @socketio.on('getPlayer')
 def fget_player(data):
     emit('changePlayer', {'players': players, 'colors': colors})
-
 
 @socketio.on('addPlayer')
 def fadd_player(data):
@@ -146,15 +224,25 @@ def fadd_player(data):
 
 @socketio.on('reset')
 def freset_game(data):
-    global num_players, ip2name, players, teammates, round_info, round_num, cards
-    num_players = 0
-    ip2name = dict()
+    global players, colors, cards, trump, teammates, round, turn, mode, bid, bidder, bidders, player_points, round_offset, round_cards, round_winner
     players = []
-    teammates = []
-    round_info = []
-    round_num = 0
+    colors = []
     cards = dict()
-    emit('changePlayer', {'players': players, 'colors': colors}, broadcast=True)
+    trump = 0
+    teammates = []
+    round = 0
+    turn = 0
+    mode = 1
+    bid = 100
+    bidder = ''
+    bidders = dict()
+
+    player_points = []
+
+    round_offset = 0
+    round_cards = []
+    round_winner = 0
+    emit('newGame', {'players': players, 'colors': colors, 'mode': 1}, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app, port=5000)

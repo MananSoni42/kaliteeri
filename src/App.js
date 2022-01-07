@@ -6,10 +6,17 @@ import React, { useState, useEffect } from 'react';
 import Start from './start';
 import Card from './Card';
 import { useGlobalContext } from './Context';
+import Win from './win'
 
 function App() {
-  const { socket, mode, round } = useGlobalContext();
-  console.log(mode, round);
+  const { socket, mode, name } = useGlobalContext();
+  const tc = ['Not decided', 'Hearts', 'Spades', 'Diamonds', 'Clubs'];
+  const [trump, setTrump] = useState(0);
+
+  socket.on('newRound', (data) => {
+    setTrump(data.trump)
+  })
+
 
   if (mode === 1) {
     return (
@@ -24,7 +31,7 @@ function App() {
       </div>
     );
   }
-  else {
+  else if (mode < 100) {
     return (
       <div className="App">
         <div className="container-fluid">
@@ -32,8 +39,12 @@ function App() {
             <div className="col-1">
               <Card num={16}></Card>
             </div>
-            <div className="col-10 my-auto">
-              <div className="fs-1"> {mode===2?'Bidding':`Round-${round}`} </div>
+            <div className="col-8 my-auto">
+              <div className="fs-1"> {mode===2?'Bidding':mode===100?'Results':`Round ${mode-2}`} </div>
+              <div className="fs-5"> {mode>=3?`Trump: ${tc[trump]}`:''} </div>
+            </div>
+            <div className="col-2">
+              <div className="fs-1"> {name} </div>
             </div>
           </div>
           <div className="row">
@@ -50,6 +61,12 @@ function App() {
         </div>
       </div>
     );  
+  } else {
+    return (
+      <div>
+        <Win></Win>
+      </div>
+    );
   }
 }
 

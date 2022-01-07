@@ -25,8 +25,12 @@ export const AppProvider = ({ children }) => {
   })
 
   socket.on('getGame', (data) => {
-    console.log('c', name)
     setCards(data.cards[name]);
+    setMode(data.mode);
+  })
+
+  socket.on('newGame', (data) => {
+    setCards([])
     setMode(data.mode);
   })
 
