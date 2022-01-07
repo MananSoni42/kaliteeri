@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 const AppContext = React.createContext();
 
 export const AppProvider = ({ children }) => {
-  const socket = io('ws://kaliteeri.herokuapp.com');
+  const socket = io('wss://kaliteeri.herokuapp.com');
   const [cards, setCards] = useState([]);
   const [mode, setMode] = useState(1);
   const [name, setName] = useState('');
