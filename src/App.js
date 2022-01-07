@@ -9,7 +9,7 @@ import { useGlobalContext } from './Context';
 import Win from './win'
 
 function App() {
-  const { socket, mode, name } = useGlobalContext();
+  const { socket, mode, name, resetGame } = useGlobalContext();
   const tc = ['Not decided', 'Hearts', 'Spades', 'Diamonds', 'Clubs'];
   const [trump, setTrump] = useState(0);
 
@@ -39,12 +39,17 @@ function App() {
             <div className="col-1">
               <Card num={16}></Card>
             </div>
-            <div className="col-8 my-auto">
+            <div className="col-6 my-auto">
               <div className="fs-1"> {mode===2?'Bidding':mode===100?'Results':`Round ${mode-2}`} </div>
               <div className="fs-5"> {mode>=3?`Trump: ${tc[trump]}`:''} </div>
             </div>
             <div className="col-2">
               <div className="fs-1"> {name} </div>
+            </div>
+            <div className="col-2 m-3">
+              <button className="btn btn-danger" onClick={() => { 
+                resetGame()
+              }}> Reset </button>
             </div>
           </div>
           <div className="row">
