@@ -1,3 +1,4 @@
+import React from 'react';
 const cardMap = require('./cards.json');
 
 function Card({num,sc,csc,dis}) {

@@ -1,5 +1,5 @@
 import Player from "./Player";
-import { useState } from "react/cjs/react.development";
+import React, { useState } from "react";
 import Card from "./Card";
 import { useGlobalContext } from './Context';
 

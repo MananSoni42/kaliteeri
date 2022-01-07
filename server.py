@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, redirect
+from flask import Flask, send_from_directory
 from flask_socketio import SocketIO, emit
 from pprint import pprint
 from utils import *
@@ -12,7 +12,7 @@ suits = {
 }
 '''
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='build', static_url_path='')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -33,6 +33,11 @@ player_points = []
 round_offset = 0
 round_cards = []
 round_winner = 0
+
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
+
 
 @socketio.on('startGame')
 def fstart(data):
@@ -65,8 +70,6 @@ def ffold(data):
     emit('newBidders', {
         'bidders': [player for player in players if bidders[player]]
     }, broadcast=True)
-
-
 
 @socketio.on('getBidder')
 def fgetbidder(data):
@@ -245,4 +248,4 @@ def freset_game(data):
     emit('newGame', {'players': players, 'colors': colors, 'mode': 1}, broadcast=True)
 
 if __name__ == '__main__':
-    socketio.run(app, port=5000)
+    socketio.run(app, debug=False)

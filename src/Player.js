@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import Card from './Card.js';
 
 function Player({name,color,card,info,turn,pt=(0,0)}) {

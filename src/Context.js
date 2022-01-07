@@ -1,11 +1,10 @@
-import React, { useContext, useState } from "react";
-import { useEffect } from "react/cjs/react.development";
+import React, { useContext, useState, useEffect } from "react";
 import { io } from "socket.io-client";
 
 const AppContext = React.createContext();
 
 export const AppProvider = ({ children }) => {
-  const socket = io('ws://localhost:5000');
+  const socket = io('kaliteeri.herokuapp.com');
   const [cards, setCards] = useState([]);
   const [mode, setMode] = useState(1);
   const [name, setName] = useState('');
