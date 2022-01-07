@@ -4,20 +4,16 @@ import { io } from "socket.io-client";
 const AppContext = React.createContext();
 
 export const AppProvider = ({ children }) => {
-  const socket = io('kaliteeri.herokuapp.com');
+  const socket = io('ws://kaliteeri.herokuapp.com');
   const [cards, setCards] = useState([]);
   const [mode, setMode] = useState(1);
   const [name, setName] = useState('');
 
   useEffect(() => {
-    console.log('hi2');
     socket.emit('getInitialData', {name:name?name:''})
   }, [])
 
   socket.on('setInitialData', (data) => {
-    //console.log(window.localStorage.getItem('name'), data);
-    console.log('si')
-    console.log(data.name, data);
     setName(data.name)
     setCards(data.cards);
     setMode(data.mode);
@@ -30,7 +26,7 @@ export const AppProvider = ({ children }) => {
 
   socket.on('newGame', (data) => {
     setCards([])
-    setMode(data.mode);
+    setMode(1);
   })
 
   socket.on('getMode', (data) => {

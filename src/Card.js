@@ -6,7 +6,7 @@ function Card({num,sc,csc,dis}) {
         <div className={`p-1 m-1 ${csc==num?'border border-3 border-dark':''}`}>
             <img className={`img-fluid ${dis?'opacity-50':'card'}`} src={cardMap[num]['img']} alt={`Card-${num}`} onClick={() => { 
                 if (!dis) {
-                    console.log('c', num); sc(num); 
+                    sc(num); 
                 }
             }}/> 
         </div>

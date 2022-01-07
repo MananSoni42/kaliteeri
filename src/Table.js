@@ -38,12 +38,9 @@ function Table() {
     })
 
     socket.on('newTurn', (data) => {
-        console.log('nt', data)
         setTurn(data.turn);
         setRoundCards(data.round_cards);
     })
-
-    console.log(turn, roundOffset)
 
     return (
         <div>

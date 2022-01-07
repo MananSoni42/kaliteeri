@@ -245,7 +245,7 @@ def freset_game(data):
     round_offset = 0
     round_cards = []
     round_winner = 0
-    emit('newGame', {'players': players, 'colors': colors, 'mode': 1}, broadcast=True)
+    emit('newGame', {}, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app, debug=False)

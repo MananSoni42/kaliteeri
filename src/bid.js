@@ -34,7 +34,6 @@ function BiddingTable() {
     });
 
     socket.on('round', async (data) => {
-        console.log(data)
         settCards(data.cards);
         setTrump(data.trump)
         await new Promise(r => setTimeout(r, 5000));
@@ -42,7 +41,6 @@ function BiddingTable() {
     })
 
     socket.on('newBidders', (data) => {
-        console.log('nb', data)
         setBidders(data.bidders)
     })
 

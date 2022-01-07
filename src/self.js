@@ -27,13 +27,10 @@ function Self() {
     }, [])
 
     useEffect(() => {
-        console.log(cards);
-        console.log(new Array(cards.length).fill(false));
         setUsedCards(new Array(cards.length).fill(false));
     }, [cards])
 
     useEffect(() => {
-        console.log('p', selectedCard);
     }, [selectedCard])
 
     useEffect(() => {
@@ -66,7 +63,6 @@ function Self() {
     })
 
     socket.on('bidError', (data) => {
-        console.log('errr')
         alert('You are the highest bidder, you can\'t Fold');
     })    
 
@@ -79,20 +75,13 @@ function Self() {
     })
 
     socket.on('newTurn', (data) => {
-        console.log('nt', data)
         setTurn(data.turn);
         setRoundCards(data.round_cards);
     })
 
     socket.on('newBidders', (data) => {
-        console.log('nb', data)
         setBidders(data.bidders)
     })
-
-    useEffect(() => {
-        console.log('p')
-        console.log(players)
-    }, [players])
 
     function fbid() {
         socket.emit('bid', {
@@ -120,14 +109,10 @@ function Self() {
     }
 
     function validate_suit(card) {
-        console.log('vs')
-        
         if (turn == 0) { return true; }
         
         var reqSuit = 1 + Math.floor((roundCards[roundOffset]-1)/13);
         var currSuit = 1 + Math.floor((card-1)/13);
-
-        console.log(turn, trump, reqSuit, currSuit)
 
         if (reqSuit == currSuit) { return true; }
         else {
@@ -223,19 +208,10 @@ function Self() {
                             <button className='btn btn-warning'
                                 disabled={(((players.length+players.indexOf(name)-roundOffset)%players.length)!=turn) || (mode < 3) }
                                 onClick={async () => {
-                                console.log('play')
-                                console.log(selectedCard)
-                                console.log(validate_suit(selectedCard))
                                 if (selectedCard !== 0 && validate_suit(selectedCard)) {
-                                    console.log('play', name, mode, selectedCard)
                                     setUsedCards(usedCards.map((card,index) => {
                                         return card || (cards[index]==selectedCard)
                                     }))
-                                    console.log(usedCards);
-                                    console.log(usedCards.map((card,index) => {
-                                        return (card || (cards[index]==selectedCard))
-                                    }));
-                                    
                                     socket.emit('play', {
                                         name: name,
                                         round: mode,

@@ -6,13 +6,10 @@ function Win() {
     const [st, setSt] = useState({winners: ['a', 'b'], losers: ['c', 'd'], bid: 0, pts: 0})
 
     useEffect(() => {
-        console.log('sent-end')
         socket.emit('getResults', {})
     }, [])
 
     socket.on('setResults', (data) => {
-        console.log('d')
-        console.log(data);
         setSt(data)
     })
 
